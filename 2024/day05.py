@@ -77,12 +77,32 @@ def sum_of_middle_pages(updates):
     return sum(middle_page(update) for update in updates)
 
 
+updates_following_rules = []
+sorted_updates_breaking_rules = []
+
+def process_updates():
+    updates_following_rules.clear()
+    sorted_updates_breaking_rules.clear()
+
+    for update in updates:
+        sorted_update = sorted(update, key=functools.cmp_to_key(sort_using_rules))
+        if update == sorted_update:
+            updates_following_rules.append(update)
+        else:
+            sorted_updates_breaking_rules.append(sorted_update)
+
+
 def part_one():
-    return sum_of_middle_pages(filter(update_follows_rules, updates))
+    return sum_of_middle_pages(updates_following_rules)
+
+def part_two():
+    return sum_of_middle_pages(sorted_updates_breaking_rules)
+
 
 
 # Unit Testing with test data from the statement
 load_data(statement_datafile)
+process_updates()
 
 assert(middle_page([75,47,61,53,29]) == 61)
 assert(middle_page([97,61,53,29,13]) == 53)
@@ -100,10 +120,14 @@ assert(update_follows_rules(updates[5]) == False)
 
 
 assert(part_one() == 143)
+assert(part_two() == 123)
 
 
 # Run solution with real data file
 load_data(solve_datafile)
+process_updates()
 part_one_result = part_one()
 assert(part_one_result == 6041)
+part_two_result = part_two()
+assert(part_two_result == 4884)
 
